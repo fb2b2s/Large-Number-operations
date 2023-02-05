@@ -31,6 +31,15 @@ public class Num  implements Comparable<Num> {
         }
     }
 
+    private static int numDigits(long num) {
+        int nd = 0;
+        while(num!=0) {
+            nd++;
+            num/=10;
+        }
+        return nd;
+    }
+
 
     public static Num add(Num a, Num b) {
         // exception thrown if one of the lists is empty
@@ -47,10 +56,15 @@ public class Num  implements Comparable<Num> {
         int i = aSize - 1, j = bSize - 1;
         for (int k = listSize - 1; k > -1; k--) {
             long num;
+            int nd1 = 0, nd2 = 0;
             if (i > -1) {
                 if (j > -1) {
                     num = a.list[i] + b.list[j] + carry;
                     // System.out.println("j & i > -1: " + num);
+                    nd1 = numDigits(num);
+                    nd2 = numDigits(Math.max
+                        (j > -1 ? b.list[j] : 0,
+                        i > -1 ? a.list[i] : 0));
                     i--;
                     j--;
                 }
@@ -67,10 +81,10 @@ public class Num  implements Comparable<Num> {
             }
             carry = 0;
 
-            if (num > 1000000000000000000L && k != 0) {
+            if (nd1 > nd2 && k != 0) {
                 carry = 1;
-                list[k] = num % 1000000000000000000L;
-                // System.out.println("num > maxL: " + num);
+                list[k] = num % (int)Math.pow(10, nd2);
+                System.out.println("num > maxL: " + num);
             }
             else{
                 list[k] = num;
@@ -150,10 +164,11 @@ public class Num  implements Comparable<Num> {
 
 
     public static void main(String[] args) {
-        Num x = new Num("8888888888888123456789123456789");
+        Num x = new Num("9999999999999999999");
         x.printList();
-        Num y = new Num("2");
+        Num y = new Num("9999999999999999999");
         y.printList();
+        // System.out.println("digits in 100 is " + Num.numDigits(100));
         Num z = Num.add(x, y);
         // z.printList();
         System.out.println(z);
