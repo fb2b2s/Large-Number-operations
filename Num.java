@@ -11,21 +11,25 @@ public class Num  implements Comparable<Num> {
     long base = defaultBase;  // Change as needed
     long[] list;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
-    int len;  // actual number of elements of array that are used;  number is stored in list[0..len-1]
+    int len;  // actual number of elements of array that are used; number is stored in list[0..len-1]
+
+    // new variable : number of digits to be kept in one list element
+    private int listElementSize = 9; // 9 is good for multiplication
 
     public Num(String s) {
         isNegative = false; // assumed to be false
         int n = s.length();
-        len = (n%18 == 0) ? n/18 : n/18 +1;
+        len = (n%listElementSize == 0)
+             ? n/listElementSize : n/listElementSize +1;
 
         list = new long[len];
 
         for(int i = 0; i < len; i++) {
-            int start = i*18;
+            int start = i*listElementSize;
 
             int maxLen = s.substring(start, n).length();
-            int end = (maxLen < 18) 
-                ? start + maxLen : start + 18;
+            int end = (maxLen < listElementSize) 
+                ? start + maxLen : start + listElementSize;
             list[i] = Long.parseLong(
                 s.substring(start, end));
         }
@@ -84,7 +88,7 @@ public class Num  implements Comparable<Num> {
             if (nd1 > nd2 && k != 0) {
                 carry = 1;
                 list[k] = num % (int)Math.pow(10, nd2);
-                System.out.println("num > maxL: " + num);
+                // System.out.println("num > maxL: " + num);
             }
             else{
                 list[k] = num;
@@ -103,6 +107,7 @@ public class Num  implements Comparable<Num> {
 
 
     public static Num product(Num a, Num b) {
+
 	    return null;
     }
 	
@@ -164,9 +169,9 @@ public class Num  implements Comparable<Num> {
 
 
     public static void main(String[] args) {
-        Num x = new Num("9999999999999999999");
+        Num x = new Num("12345678912345678999");
         x.printList();
-        Num y = new Num("9999999999999999999");
+        Num y = new Num("12345678912345678999");
         y.printList();
         // System.out.println("digits in 100 is " + Num.numDigits(100));
         Num z = Num.add(x, y);
