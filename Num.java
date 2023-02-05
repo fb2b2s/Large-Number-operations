@@ -1,3 +1,4 @@
+import java.util.NoSuchElementException;
 
 // Starter code for SP3.
 // Version 1.0 (Fri, Feb 3).
@@ -32,7 +33,58 @@ public class Num  implements Comparable<Num> {
 
 
     public static Num add(Num a, Num b) {
-	    return null;
+        // exception thrown if one of the lists is empty
+        if(a.list.length == 0 || b.list.length == 0) 
+            throw new NoSuchElementException(); 
+
+        
+        int aSize = a.list.length;
+        int bSize = b.list.length;
+        int listSize = Math.max(aSize, bSize);
+        long[] list = new long[listSize];
+
+        int carry = 0;
+        int i = aSize - 1, j = bSize - 1;
+        for (int k = listSize - 1; k > -1; k--) {
+            long num;
+            if (i > -1) {
+                if (j > -1) {
+                    num = a.list[i] + b.list[j] + carry;
+                    // System.out.println("j & i > -1: " + num);
+                    i--;
+                    j--;
+                }
+                else{
+                    num = a.list[i] + carry;
+                    // System.out.println("i > -1: " + num);
+                    i--;
+                }
+            }
+            else {
+                num = b.list[j] + carry;
+                j--;
+                // System.out.println("j > -1: " + num);
+            }
+            carry = 0;
+
+            if (num > 1000000000000000000L && k != 0) {
+                carry = 1;
+                list[k] = num % 1000000000000000000L;
+                // System.out.println("num > maxL: " + num);
+            }
+            else{
+                list[k] = num;
+                // System.out.println("num is Ok: " + num);
+            }
+        }
+
+        String ans = "";
+        for(int l = 0; l < listSize; l++) {
+            ans += (Long.toString(list[l]));
+        }
+
+        // System.out.println("answer is: " + ans);
+	    return new Num(ans);
     }
 
 
@@ -42,7 +94,11 @@ public class Num  implements Comparable<Num> {
 	
 	// Return number to a string in base 10
     public String toString() {
-	    return null;
+        String num = "";
+        for(int l = 0; l < len; l++) {
+            num += (Long.toString(list[l]));
+        }
+	    return num;
     }
 
 	//  methods below are optional
@@ -95,12 +151,15 @@ public class Num  implements Comparable<Num> {
 
     public static void main(String[] args) {
         Num x = new Num("8888888888888123456789123456789");
-        // Num y = new Num("2");
-        // Num z = Num.add(x, y);
-        // System.out.println(z);
+        x.printList();
+        Num y = new Num("2");
+        y.printList();
+        Num z = Num.add(x, y);
+        // z.printList();
+        System.out.println(z);
         // Num a = Num.product(x, y);
         // System.out.println(a);
         // if(a != null) a.printList();
-        x.printList();
+        
     }
 }
