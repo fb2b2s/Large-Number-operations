@@ -14,7 +14,7 @@ public class Num  implements Comparable<Num> {
     int len;  // actual number of elements of array that are used; number is stored in list[0..len-1]
 
     // new variable : number of digits to be kept in one list element
-    private int listElementSize = 9; // 9 is good for multiplication
+    private static int listElementSize = 9; // 9 is good for multiplication
 
     public Num(String s) {
         isNegative = false; // assumed to be false
@@ -24,15 +24,20 @@ public class Num  implements Comparable<Num> {
 
         list = new long[len];
 
-        for(int i = 0; i < len; i++) {
-            int start = i*listElementSize;
+        int start;
+        int end = n;
+        for(int i = len-1; i != -1; i--) {
+            start = (n - (len-i)*listElementSize > -1)
+                ? n - (len-i)*listElementSize : 0;
 
-            int maxLen = s.substring(start, n).length();
-            int end = (maxLen < listElementSize) 
-                ? start + maxLen : start + listElementSize;
+            // System.out.println("start: " + start + "     end: " + end);
             list[i] = Long.parseLong(
                 s.substring(start, end));
+
+            end = start;
         }
+
+        // System.out.println("first addition is: " + numDigitsFirstAddition);
     }
 
     private static int numDigits(long num) {
@@ -50,73 +55,152 @@ public class Num  implements Comparable<Num> {
         if(a.list.length == 0 || b.list.length == 0) 
             throw new NoSuchElementException(); 
 
-        
+        // System.out.println("The non static value is: " + a.numDigitsFirstAddition);
         int aSize = a.list.length;
         int bSize = b.list.length;
         int listSize = Math.max(aSize, bSize);
-        long[] list = new long[listSize];
 
-        int carry = 0;
+        boolean moreThanMax = false;
+        if(aSize == bSize) {
+            if(numDigits(a.list[0] + b.list[0]) > listElementSize) {
+                listSize++;
+            }
+        }
+        
+        long[] list = new long[listSize];
+        if(!moreThanMax) {
+            list[0] = 1;
+        }
+        // System.out.println("sizes are " + aSize + " and " + bSize);
+
+        long carry = 0;
         int i = aSize - 1, j = bSize - 1;
+
         for (int k = listSize - 1; k > -1; k--) {
-            long num;
-            int nd1 = 0, nd2 = 0;
+            // System.out.println("a[" + i + "]" + " = " + a.list[i]);
+            // System.out.println("b[" + j + "]" + " = " + b.list[j]);
             if (i > -1) {
                 if (j > -1) {
-                    num = a.list[i] + b.list[j] + carry;
-                    // System.out.println("j & i > -1: " + num);
-                    nd1 = numDigits(num);
-                    nd2 = numDigits(Math.max
-                        (j > -1 ? b.list[j] : 0,
-                        i > -1 ? a.list[i] : 0));
+                    
+                    System.out.println(carry);
+
+                    list[k] = (a.list[i] + b.list[j] + carry) 
+                        % (long)Math.pow(10, listElementSize);
+                    carry = (a.list[i] + b.list[j] + carry) 
+                        / (long)Math.pow(10, listElementSize);
                     i--;
                     j--;
                 }
                 else{
-                    num = a.list[i] + carry;
-                    // System.out.println("i > -1: " + num);
+                    list[k] = a.list[i] + carry;
+                    carry = (a.list[i] + carry) 
+                    / (long)Math.pow(10, listElementSize);
                     i--;
                 }
             }
-            else {
-                num = b.list[j] + carry;
+            else if(j > -1) {
+                list[k] = b.list[j] + carry;
+                carry = (b.list[j] + carry) 
+                    / (long)Math.pow(10, listElementSize);
                 j--;
-                // System.out.println("j > -1: " + num);
             }
-            carry = 0;
-
-            if (nd1 > nd2 && k != 0) {
-                carry = 1;
-                list[k] = num % (int)Math.pow(10, nd2);
-                // System.out.println("num > maxL: " + num);
-            }
-            else{
-                list[k] = num;
-                // System.out.println("num is Ok: " + num);
-            }
+            
+            
+            // System.out.println("list[" + k + "]" + " = " + list[k]);
         }
 
-        String ans = "";
-        for(int l = 0; l < listSize; l++) {
-            ans += (Long.toString(list[l]));
+        String num = Long.toString(list[0]);
+        // System.out.println("toString start");
+        for(int l = 1; l < list.length; l++){
+            int nd = numDigits(list[l]);
+
+            if(nd == listElementSize) { 
+                // System.out.println("nd==listElementSize " + l);
+                num += Long.toString(list[l]);
+            }
+            else if(nd > 0) {
+                // System.out.println("nd>0 " + l);
+                num += ("0".repeat(listElementSize-nd) 
+                    + Long.toString(list[l]));
+            }
+            else{
+                // System.out.println("else " + l);
+                num += "0".repeat(listElementSize);
+            }
         }
 
         // System.out.println("answer is: " + ans);
-	    return new Num(ans);
+	    return new Num(num);
     }
 
 
     public static Num product(Num a, Num b) {
+        // ArrayList<long> list = new ArrayList<>();
+        // list.add(0);
 
+        // int aSize = a.list.length;
+        // int bSize = b.list.length;
+
+        // //    a
+        // //  * b
+        // //  _____
+        // int nd = numDigits(a[aSize-1]);
+        // int lim = (int)Math.pow(10, nd);
+        // int limGen = (int)Math.pow(10, listElementSize);
+        
+        
+        // for(int i = bSize -1; i != -1; i--) {
+        //     long mul = b[i] * a[aSize-1];
+        //     long carry = mul / lim;
+        //     long put = mul % lim;
+        //     if(i == bSize - 1) {
+        //         list.add(list.size(), put);
+        //     }
+        //     else {
+        //         mul += (list.get(list.size()-(bSize-i+1))
+        //             + put);
+        //         put =  mul % limGen;
+        //         carry += (mul % lim);
+        //         list.set(list.size()-(bSize-i+1), put);
+        //     }
+
+        //     // need to add another node if there isn't already
+        //     // then set the value
+
+        //     for(int j = aSize - 2; j != -1; j--) {
+        //         mul = b[i] * a[j] + carry;
+        //         carry = mul / limGen;
+        //         put = mul % limGen;
+        //         list.add(list.size() - (sSize - j - 1),
+        //             put);
+        //     }
+        // }
 	    return null;
     }
 	
 	// Return number to a string in base 10
     public String toString() {
-        String num = "";
-        for(int l = 0; l < len; l++) {
-            num += (Long.toString(list[l]));
+        String num = Long.toString(list[0]);
+        // System.out.println("toString start");
+        for(int i = 1; i < len; i++){
+            int nd = numDigits(list[i]);
+
+            if(nd == listElementSize) { 
+                // System.out.println("nd==listElementSize " + i);
+                num += Long.toString(list[i]);
+            }
+            else if(nd > 0) {
+                // System.out.println("nd>0 " + i);
+                num += ("0".repeat(listElementSize-nd) 
+                    + Long.toString(list[i]));
+            }
+            else{
+                // System.out.println("else " + i);
+                num += "0".repeat(listElementSize);
+            }
         }
+        // System.out.println("toString end");
+
 	    return num;
     }
 
@@ -165,18 +249,35 @@ public class Num  implements Comparable<Num> {
 	    return null;
     }
 
+    public static Num fibonacci(int n) {
+        Num a = new Num("0");
+        Num b = new Num("1");
+        for(int i=0; i<n; i++) {
+            Num c = Num.add(a,b);
+            a = b;
+            b = c;
+        }
+        return a;
+    }
+
  
 
 
     public static void main(String[] args) {
-        Num x = new Num("12345678912345678999");
-        x.printList();
-        Num y = new Num("12345678912345678999");
-        y.printList();
-        // System.out.println("digits in 100 is " + Num.numDigits(100));
+        Num x = new Num("1836311903");
+        // // x.printList();
+        // // System.out.println(x);
+        Num y = new Num("2971215073");
+        // // y.printList();
+        // // System.out.println(y);
+        // // // System.out.println("digits in 100 is " + Num.numDigits(100));
         Num z = Num.add(x, y);
+        // // System.out.println("z list: ");
         // z.printList();
         System.out.println(z);
+        // System.out.println(Num.fibonacci(46));
+        // z.printList();
+        // System.out.println(z);
         // Num a = Num.product(x, y);
         // System.out.println(a);
         // if(a != null) a.printList();
