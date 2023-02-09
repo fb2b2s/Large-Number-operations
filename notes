@@ -1,1 +1,5 @@
-1) Make a method to get sizes of a and b lists in the operation methods.
+Possible Changes : 
+  1) Make a method to get sizes of a and b lists in the operation methods.
+ 
+Important points : 
+  1) 0*0 case in the product method was not handled since the size of prod list became 0.
