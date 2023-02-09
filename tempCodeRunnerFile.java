@@ -1,3 +1,3 @@
-if(carry != 0) {
-        //     list[0] += carry;
+for(int f = 0; f < listSize; f++) {
+        //     System.out.println("(" + f + "): " + list[f]);
         // }

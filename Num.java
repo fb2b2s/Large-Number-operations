@@ -161,16 +161,20 @@ public class Num  implements Comparable<Num> {
                 k--;
                 // System.out.println("carry: " + carry);
             }
-            
+            if(carry != 0) {
+                list[k] += carry;
+            }
+            //for(int f = 0; f < listSize; f++) {
+             //   System.out.println("(" + f + "): " + list[f]);
+            //}
+            //System.out.println("\n");
         }
         
-        if(carry != 0) {
-            list[0] += carry;
-        }
+        
 
-        for(int f = 0; f < listSize; f++) {
-            System.out.println("(" + f + "): " + list[f]);
-        }
+       //// for(int f = 0; f < listSize; f++) {
+        //     System.out.println("(" + f + "): " + list[f]);
+        // }
 
         String num = Long.toString(list[0]);
         // System.out.println("toString start");
