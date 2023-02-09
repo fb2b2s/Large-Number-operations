@@ -142,7 +142,7 @@ public class Num  implements Comparable<Num> {
             ? digs/listElementSize : digs/listElementSize + 1;
         long[] list = new long[listSize];
 
-        System.out.println("listSize = " + listSize);
+        // System.out.println("listSize = " + listSize);
 
         int aSize = a.list.length;
         int bSize = b.list.length;
@@ -152,17 +152,18 @@ public class Num  implements Comparable<Num> {
             int k = listSize - (bSize-i);
             for(int j = aSize-1; j > -1; j--) {
                 long mul = a.list[j] * b.list[i];
-                list[k] = (list[k] + mul + carry) 
+                long curVal = list[k];
+                list[k] = (curVal + mul + carry) 
                     % (long)Math.pow(10, listElementSize);
-                carry = (list[k] + mul + carry) 
+                // carry = 0;
+                carry = (curVal + mul + carry) 
                     / (long)Math.pow(10, listElementSize);
                 k--;
-                for(long l : list)
-                    System.out.print(l + " ");
-                System.out.println(carry);
+                // System.out.println("carry: " + carry);
             }
             
         }
+        
         if(carry != 0) {
             list[0] += carry;
         }
