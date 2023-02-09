@@ -53,7 +53,7 @@ public class Num  implements Comparable<Num> {
 
     public static Num add(Num a, Num b) {
         // exception thrown if one of the lists is empty
-        if(a.list.length == 0 || b.list.length == 0) 
+        if(a.list.length == 0 && b.list.length == 0) 
             throw new NoSuchElementException(); 
 
         // System.out.println("The non static value is: " + a.numDigitsFirstAddition);
@@ -136,10 +136,15 @@ public class Num  implements Comparable<Num> {
 
 
     public static Num product(Num a, Num b) {
+
+
         int digs = (a.list.length - 1 + b.list.length - 1)
             * listElementSize + numDigits(a.list[0]) + numDigits(b.list[0]);
         int listSize = (digs%listElementSize == 0) 
             ? digs/listElementSize : digs/listElementSize + 1;
+
+        if(listSize == 0) {return new Num("0");}
+
         long[] list = new long[listSize];
 
         // System.out.println("listSize = " + listSize);
@@ -148,21 +153,22 @@ public class Num  implements Comparable<Num> {
         int bSize = b.list.length;
 
         long carry = 0;
+        long lim = (long)Math.pow(10, listElementSize);
         for(int i = bSize-1; i > -1; i--) {
             int k = listSize - (bSize-i);
             for(int j = aSize-1; j > -1; j--) {
                 long mul = a.list[j] * b.list[i];
                 long curVal = list[k];
-                list[k] = (curVal + mul + carry) 
-                    % (long)Math.pow(10, listElementSize);
+                list[k] = (curVal + mul + carry)%lim;
                 // carry = 0;
-                carry = (curVal + mul + carry) 
-                    / (long)Math.pow(10, listElementSize);
+                carry = (curVal + mul + carry) / lim;
                 k--;
                 // System.out.println("carry: " + carry);
             }
             if(carry != 0) {
-                list[k] += carry;
+                long curVal = list[k];
+                list[k] = (curVal + carry)%lim;
+                carry = (curVal + carry)/lim;
             }
             //for(int f = 0; f < listSize; f++) {
              //   System.out.println("(" + f + "): " + list[f]);
@@ -176,7 +182,7 @@ public class Num  implements Comparable<Num> {
         //     System.out.println("(" + f + "): " + list[f]);
         // }
 
-        String num = Long.toString(list[0]);
+        String num = (list[0] == 0) ? "" : Long.toString(list[0]);
         // System.out.println("toString start");
         for(int i = 1; i < listSize; i++){
             int nd = numDigits(list[i]);
@@ -285,10 +291,10 @@ public class Num  implements Comparable<Num> {
 
 
     public static void main(String[] args) {
-        Num x = new Num("5555555555");
+        Num x = new Num("1234");
         // // // x.printList();
         // // // System.out.println(x);
-        Num y = new Num("5555555555");
+        Num y = new Num("1343");
         // // // y.printList();
         // // // System.out.println(y);
         // // // // System.out.println("digits in 100 is " + Num.numDigits(100));

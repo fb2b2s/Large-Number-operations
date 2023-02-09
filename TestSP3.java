@@ -10,7 +10,7 @@
 
 public class TestSP3 {
     public static void main(String[] args) throws Exception {
-        int val = 4;
+        int val = 3;
 	if(args.length > 0) { val = Integer.parseInt(args[0]); }
 
 	Timer timer = new Timer();
@@ -52,10 +52,18 @@ public class TestSP3 {
 	Num d = new Num("0");
 	Num e = null;
 	while(m <= n) {
+		// System.out.println("a = " + a);
+		// a.printList();
+		// System.out.println(b);
+		// System.out.println(c);
 	    e = quad(a,a,b,c);
+		// System.out.println("done0");
 	    Num f = quad(a,b,b,d);
+		// System.out.println("done1");
 	    Num g = quad(a,c,c,d);
+		// System.out.println("done2");
 	    Num h = quad(b,c,d,d);
+		// System.out.println("done3");
 	    a = e;
 	    b = f;
 	    c = g;
