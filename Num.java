@@ -1,4 +1,5 @@
 import java.util.NoSuchElementException;
+import java.util.ArrayList;
 
 // Starter code for SP3.
 // Version 1.0 (Fri, Feb 3).
@@ -82,7 +83,7 @@ public class Num  implements Comparable<Num> {
             if (i > -1) {
                 if (j > -1) {
                     
-                    System.out.println(carry);
+                    // System.out.println(carry);
 
                     list[k] = (a.list[i] + b.list[j] + carry) 
                         % (long)Math.pow(10, listElementSize);
@@ -135,47 +136,62 @@ public class Num  implements Comparable<Num> {
 
 
     public static Num product(Num a, Num b) {
-        // ArrayList<long> list = new ArrayList<>();
-        // list.add(0);
+        int digs = (a.list.length - 1 + b.list.length - 1)
+            * listElementSize + numDigits(a.list[0]) + numDigits(b.list[0]);
+        int listSize = (digs%listElementSize == 0) 
+            ? digs/listElementSize : digs/listElementSize + 1;
+        long[] list = new long[listSize];
 
-        // int aSize = a.list.length;
-        // int bSize = b.list.length;
+        System.out.println("listSize = " + listSize);
 
-        // //    a
-        // //  * b
-        // //  _____
-        // int nd = numDigits(a[aSize-1]);
-        // int lim = (int)Math.pow(10, nd);
-        // int limGen = (int)Math.pow(10, listElementSize);
-        
-        
-        // for(int i = bSize -1; i != -1; i--) {
-        //     long mul = b[i] * a[aSize-1];
-        //     long carry = mul / lim;
-        //     long put = mul % lim;
-        //     if(i == bSize - 1) {
-        //         list.add(list.size(), put);
-        //     }
-        //     else {
-        //         mul += (list.get(list.size()-(bSize-i+1))
-        //             + put);
-        //         put =  mul % limGen;
-        //         carry += (mul % lim);
-        //         list.set(list.size()-(bSize-i+1), put);
-        //     }
+        int aSize = a.list.length;
+        int bSize = b.list.length;
 
-        //     // need to add another node if there isn't already
-        //     // then set the value
+        long carry = 0;
+        for(int i = bSize-1; i > -1; i--) {
+            int k = listSize - (bSize-i);
+            for(int j = aSize-1; j > -1; j--) {
+                long mul = a.list[j] * b.list[i];
+                list[k] = (list[k] + mul + carry) 
+                    % (long)Math.pow(10, listElementSize);
+                carry = (list[k] + mul + carry) 
+                    / (long)Math.pow(10, listElementSize);
+                k--;
+                for(long l : list)
+                    System.out.print(l + " ");
+                System.out.println(carry);
+            }
+            
+        }
+        if(carry != 0) {
+            list[0] += carry;
+        }
 
-        //     for(int j = aSize - 2; j != -1; j--) {
-        //         mul = b[i] * a[j] + carry;
-        //         carry = mul / limGen;
-        //         put = mul % limGen;
-        //         list.add(list.size() - (sSize - j - 1),
-        //             put);
-        //     }
-        // }
-	    return null;
+        for(int f = 0; f < listSize; f++) {
+            System.out.println("(" + f + "): " + list[f]);
+        }
+
+        String num = Long.toString(list[0]);
+        // System.out.println("toString start");
+        for(int i = 1; i < listSize; i++){
+            int nd = numDigits(list[i]);
+
+            if(nd == listElementSize) { 
+                // System.out.println("nd==listElementSize " + i);
+                num += Long.toString(list[i]);
+            }
+            else if(nd > 0) {
+                // System.out.println("nd>0 " + i);
+                num += ("0".repeat(listElementSize-nd) 
+                    + Long.toString(list[i]));
+            }
+            else{
+                // System.out.println("else " + i);
+                num += "0".repeat(listElementSize);
+            }
+        }
+
+	    return new Num(num);
     }
 	
 	// Return number to a string in base 10
@@ -264,22 +280,22 @@ public class Num  implements Comparable<Num> {
 
 
     public static void main(String[] args) {
-        Num x = new Num("1836311903");
-        // // x.printList();
-        // // System.out.println(x);
-        Num y = new Num("2971215073");
-        // // y.printList();
-        // // System.out.println(y);
-        // // // System.out.println("digits in 100 is " + Num.numDigits(100));
-        Num z = Num.add(x, y);
-        // // System.out.println("z list: ");
-        // z.printList();
-        System.out.println(z);
-        // System.out.println(Num.fibonacci(46));
+        Num x = new Num("5555555555");
+        // // // x.printList();
+        // // // System.out.println(x);
+        Num y = new Num("5555555555");
+        // // // y.printList();
+        // // // System.out.println(y);
+        // // // // System.out.println("digits in 100 is " + Num.numDigits(100));
+        // Num z = Num.add(x, y);
+        // // // System.out.println("z list: ");
+        // // z.printList();
+        // System.out.println(z);
+        // System.out.println(Num.fibonacci(2000));
         // z.printList();
         // System.out.println(z);
-        // Num a = Num.product(x, y);
-        // System.out.println(a);
+        Num a = Num.product(x, y);
+        System.out.println(a);
         // if(a != null) a.printList();
         
     }

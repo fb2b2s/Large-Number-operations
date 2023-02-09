@@ -10,7 +10,7 @@
 
 public class TestSP3 {
     public static void main(String[] args) throws Exception {
-        int val = 1;
+        int val = 4;
 	if(args.length > 0) { val = Integer.parseInt(args[0]); }
 
 	Timer timer = new Timer();
