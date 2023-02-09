@@ -110,28 +110,34 @@ public class Num  implements Comparable<Num> {
             // System.out.println("list[" + k + "]" + " = " + list[k]);
         }
 
-        String num = Long.toString(list[0]);
+        String num = listToString(list);
+
+        // System.out.println("answer is: " + ans);
+	    return new Num(num);
+    }
+
+    private static String listToString(long[] list) {
+        String num = (list[0] == 0) ? "" : Long.toString(list[0]);
         // System.out.println("toString start");
-        for(int l = 1; l < list.length; l++){
-            int nd = numDigits(list[l]);
+        for(int i = 1; i < list.length; i++){
+            int nd = numDigits(list[i]);
 
             if(nd == listElementSize) { 
-                // System.out.println("nd==listElementSize " + l);
-                num += Long.toString(list[l]);
+                // System.out.println("nd==listElementSize " + i);
+                num += Long.toString(list[i]);
             }
             else if(nd > 0) {
-                // System.out.println("nd>0 " + l);
+                // System.out.println("nd>0 " + i);
                 num += ("0".repeat(listElementSize-nd) 
-                    + Long.toString(list[l]));
+                    + Long.toString(list[i]));
             }
             else{
-                // System.out.println("else " + l);
+                // System.out.println("else " + i);
                 num += "0".repeat(listElementSize);
             }
         }
 
-        // System.out.println("answer is: " + ans);
-	    return new Num(num);
+        return num;
     }
 
 
@@ -182,25 +188,7 @@ public class Num  implements Comparable<Num> {
         //     System.out.println("(" + f + "): " + list[f]);
         // }
 
-        String num = (list[0] == 0) ? "" : Long.toString(list[0]);
-        // System.out.println("toString start");
-        for(int i = 1; i < listSize; i++){
-            int nd = numDigits(list[i]);
-
-            if(nd == listElementSize) { 
-                // System.out.println("nd==listElementSize " + i);
-                num += Long.toString(list[i]);
-            }
-            else if(nd > 0) {
-                // System.out.println("nd>0 " + i);
-                num += ("0".repeat(listElementSize-nd) 
-                    + Long.toString(list[i]));
-            }
-            else{
-                // System.out.println("else " + i);
-                num += "0".repeat(listElementSize);
-            }
-        }
+        String num = listToString(list);
 
 	    return new Num(num);
     }
