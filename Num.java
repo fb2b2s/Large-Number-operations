@@ -238,7 +238,19 @@ public class Num  implements Comparable<Num> {
     }
     // Use divide and conquer
     public static Num power(Num a, long n) {
-	    return null;
+        if(a.list.length == 0) {throw new NoSuchElementException();}
+        if(a.list.length == 1 && a.list[0] == 0){ return new Num("1");}
+
+        if(n == 1) {return a;}
+
+        Num ans;
+        if(n%2 == 0) {
+            ans =  Num.product(power(a, n/2), power(a, n/2));
+        }
+        else {
+            ans = Num.product(a, Num.product(power(a, n/2), power(a, n/2)));
+        }
+	    return ans;
     }
 
     // Use divide and conquer or division algorithm to calculate a/b
@@ -291,7 +303,7 @@ public class Num  implements Comparable<Num> {
 
 
     public static void main(String[] args) {
-        Num x = new Num("1234");
+        Num x = new Num("2");
         // // // x.printList();
         // // // System.out.println(x);
         Num y = new Num("1343");
@@ -305,8 +317,10 @@ public class Num  implements Comparable<Num> {
         // System.out.println(Num.fibonacci(2000));
         // z.printList();
         // System.out.println(z);
-        Num a = Num.product(x, y);
-        System.out.println(a);
+        // Num a = Num.product(x, y);
+        // System.out.println(a);
+        Num b = Num.power(x, 5);
+        System.out.println(b);
         // if(a != null) a.printList();
         
     }
